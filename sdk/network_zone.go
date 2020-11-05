@@ -86,3 +86,21 @@ func (m *ApiSupplement) UpdateNetworkZone(id string, body NetworkZone, qp *query
 	}
 	return &zone, resp, nil
 }
+
+func (m *ApiSupplement) BlacklistNetworkZone(id string, body NetworkZone, qp *query.Params) (*NetworkZone, *okta.Response, error) {
+	url := fmt.Sprintf("/api/v1/zones/%s", id)
+	if qp != nil {
+		url += qp.String()
+	}
+	req, err := m.RequestExecutor.NewRequest("PUT", url, body)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	zone := body
+	resp, err := m.RequestExecutor.Do(req, &zone)
+	if err != nil {
+		return nil, resp, err
+	}
+	return &zone, resp, nil
+}

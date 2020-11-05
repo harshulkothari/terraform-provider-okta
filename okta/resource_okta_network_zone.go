@@ -14,6 +14,7 @@ func resourceNetworkZone() *schema.Resource {
 		Read:   resourceNetworkZoneRead,
 		Update: resourceNetworkZoneUpdate,
 		Delete: resourceNetworkZoneDelete,
+		Blacklist: resourceNetworkZoneBlacklist,
 		// Exists: resourceNetworkZoneExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -92,6 +93,18 @@ func resourceNetworkZoneUpdate(d *schema.ResourceData, m interface{}) error {
 	client := getSupplementFromMetadata(m)
 	networkZone := buildNetworkZone(d, m)
 	_, _, err := client.UpdateNetworkZone(d.Id(), *networkZone, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return resourceNetworkZoneRead(d, m)
+}
+
+func resourceNetworkZoneBlacklist(d *schema.ResourceData, m interface{}) error {
+	client := getSupplementFromMetadata(m)
+	networkZone := buildNetworkZone(d, m)
+	_, _, err := client.BlacklistNetworkZone(d.Id(), *networkZone, nil)
 
 	if err != nil {
 		return err
